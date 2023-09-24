@@ -104,15 +104,20 @@ public class DigitalbbREST {
 	  @Produces(MediaType.APPLICATION_OCTET_STREAM)
 	  public Response getFileInJPEGFormat(@PathParam("fileName") String fileName) 
 	  {
-		  StringBuilder sql = new StringBuilder("SELECT data FROM pictures");
+		  StringBuilder sql = new StringBuilder("SELECT data, name, endung FROM pictures");
 		  	sql.append(" WHERE name = '");
 		  	sql.append(fileName+"'");
 			InputStream os = null;
+			String name = "";
+			String end = "";
 			try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql.toString())) {
 				
 				ResultSet rs = ps.executeQuery();
 				while(rs.next()) {
 					os = rs.getBinaryStream("data");
+					name = rs.getString("name");
+					end = rs.getString("endung");
+					
 				}
 				
 				
@@ -121,8 +126,8 @@ public class DigitalbbREST {
 				e.printStackTrace();
 			}
 			
-			
-			File targetFile = new File("targetFile.png");
+			String filename = name+"."+end;
+			File targetFile = new File(filename);
 			try(OutputStream outputStream = new FileOutputStream(targetFile)){
 			    IOUtils.copy(os, outputStream);
 			} catch (FileNotFoundException e) {
@@ -134,7 +139,7 @@ public class DigitalbbREST {
 		    
 			
 			ResponseBuilder response = Response.ok((Object) targetFile);
-			response.header("Content-Disposition", "attachment; filename="+fileName+".jpg");
+			response.header("Content-Disposition", "attachment; filename="+filename);
 			
 	    return response.build();
 	  }
