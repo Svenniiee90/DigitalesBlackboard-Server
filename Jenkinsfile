@@ -4,7 +4,7 @@ pipeline {
 		dockerHome = tool 'docker'
 		mavenHome = tool 'maven3.8.6'
 		PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
-		registry = "svenwahl/gapp-server"
+		registry = "hub-s3.codedudes.de/dbb-server"
         registryCredential = 'dockerhubaccount'
         dockerImage = ''
 	}
@@ -41,9 +41,8 @@ pipeline {
 
         stage('Upload to dockerhub') {
             steps{
-               sh 'docker login -u svenwahl -p Stage126$%'
                
-               sh 'docker push svenwahl/gapp-server:$BUILD_ID'
+               sh 'docker push hub-s3.codedudes.de/dbb-server:$BUILD_ID'
                
         }
     }
@@ -53,10 +52,8 @@ pipeline {
 	    steps{
                 sshagent(['server3']){
                 sh '''
-                ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker login -u svenwahl -p Stage126$%
-		ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker stop gapp
-                ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker rm gapp
-		ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker run -d -p 8080:8080 --name gapp svenwahl/gapp-server:$BUILD_ID
+                
+		ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker run -d -p 8080:8080 --name dbb-server hub-s3.codedudes.de/dbb-server:$BUILD_ID
                 '''
           }
       }
