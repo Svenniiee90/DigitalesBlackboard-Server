@@ -59,7 +59,7 @@ public class DigitalbbREST {
 	  public StoreImageResult uploadFile(@MultipartForm FileUploadForm incomingFile) throws IOException {
 		StoreImageResult result = new StoreImageResult();
 		String name = incomingFile.getFileName().split("\\.")[0];
-		String endung = incomingFile.getFileName().split("\\.")[0];
+		String endung = incomingFile.getFileName().split("\\.")[1];
 		String completeFilePath = incomingFile.getFileName();
 		
 		File file = new File(completeFilePath);
