@@ -106,7 +106,7 @@ public class DigitalbbREST {
 		  	sql.append(" WHERE name = '");
 		  	sql.append(fileName+"'");
 			InputStream os = null;
-			try (Connection con = dbb_DS.getConnection(); Statement ps = con.prepareStatement(sql.toString())) {
+			try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql.toString())) {
 				
 				ResultSet rs = ps.executeQuery(sql.toString());
 				while(rs.next()) {
