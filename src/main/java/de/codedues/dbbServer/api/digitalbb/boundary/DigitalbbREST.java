@@ -58,9 +58,9 @@ public class DigitalbbREST {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	  public StoreImageResult uploadFile(@MultipartForm FileUploadForm incomingFile) throws IOException {
 		StoreImageResult result = new StoreImageResult();
-		String fileName = incomingFile.getFileName();
-		
-		String completeFilePath = fileName;
+		String name = incomingFile.getFileName().split(".")[0];
+		String endung = incomingFile.getFileName().split(".")[1];
+		String completeFilePath = incomingFile.getFileName();
 		
 		File file = new File(completeFilePath);
 		if(!file.exists()) {
@@ -77,12 +77,13 @@ public class DigitalbbREST {
 		uploaded = new FileInputStream(file);
 		
 	    if(uploaded != null) {
-	    	String sql = "INSERT INTO `pictures`(name, itemid, data) VALUES(?,?,?)";
+	    	String sql = "INSERT INTO `pictures`(name, endung, itemid, data) VALUES(?,?,?,?)";
 		    try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 		    	
-		    	ps.setString(1, fileName);
-		    	ps.setInt(2, 22323);
-		    	ps.setBlob(3, uploaded);
+		    	ps.setString(1, name);
+		    	ps.setString(2, endung);
+		    	ps.setInt(3, 22323);
+		    	ps.setBlob(4, uploaded);
 		    	ps.execute();
 		    	
 		    	
@@ -92,6 +93,7 @@ public class DigitalbbREST {
 			}	    
 	    }
 	    result.setState("Successful");
+	    file.delete();
 	    return result;
 	    
 	    
@@ -108,7 +110,7 @@ public class DigitalbbREST {
 			InputStream os = null;
 			try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql.toString())) {
 				
-				ResultSet rs = ps.executeQuery(sql.toString());
+				ResultSet rs = ps.executeQuery();
 				while(rs.next()) {
 					os = rs.getBinaryStream("data");
 				}
