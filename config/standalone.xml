@@ -172,6 +172,20 @@
                         <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
                     </validation>
                 </datasource>
+                <datasource jndi-name="java:jboss/datasources/dbbDS" pool-name="dbbDS" enabled="true" statistics-enabled="true">
+                    <connection-url>jdbc:mariadb://172.18.0.1:3306/DbbDB</connection-url>
+                    <driver>mariadb</driver>
+                    <new-connection-sql>SELECT 1</new-connection-sql>
+                    <security>
+                        <user-name>root</user-name>
+                        <password>adminpass</password>
+                    </security>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
+                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
+                    </validation>
+                </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
