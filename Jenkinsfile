@@ -52,7 +52,8 @@ pipeline {
 	    steps{
                 sshagent(['server3']){
                 sh '''
-                
+		ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker stop dbb-server
+    ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker rm dbb-server
 		ssh -o StrictHostKeyChecking=no root@212.227.224.201 docker run -d -p 8080:8082 --name dbb-server hub-s3.codedudes.de/dbb-server:$BUILD_ID
                 '''
           }
