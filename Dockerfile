@@ -7,8 +7,8 @@ COPY ./config/mariadb/main/*.jar /opt/jboss/wildfly/modules/system/layers/base/c
 COPY ./config/standalone.xml /opt/jboss/wildfly/standalone/configuration/
 COPY ./target/*.war /opt/jboss/wildfly/standalone/deployments/
 
-EXPOSE 8082
-EXPOSE 9992
+EXPOSE 8080
+EXPOSE 9990
 
 RUN /opt/jboss/wildfly/bin/add-user.sh swahl Stage126$% --silent
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
