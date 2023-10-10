@@ -98,7 +98,7 @@ public class DigitalbbREST {
 	    
 	    
 	  }
-	
+	//
 	  @GET
 	  @Path("image/{fileName}")
 	  @Produces(MediaType.APPLICATION_OCTET_STREAM)
