@@ -101,7 +101,7 @@ public class DigitalbbREST {
 	//
 	  @GET
 	  @Path("image/{fileName}")
-	  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+	  @Produces("image/jpeg")
 	  public Response getFileInJPEGFormat(@PathParam("fileName") String fileName) 
 	  {
 		  StringBuilder sql = new StringBuilder("SELECT data, name, endung FROM pictures");
