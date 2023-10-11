@@ -119,7 +119,7 @@ public class DigitalbbREST {
 		public GetAllItemResultCO addItem(GetAllItemRequestCO request) {
 		GetAllItemResultCO resultCO = new GetAllItemResultCO();
 		List<BBItemCO> resultList = new ArrayList<>();
-;		String sql = "SELECT * FROM `item` WHERE end <= CURRENT_TIMESTAMP";
+;		String sql = "SELECT * FROM `item`";
 		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
