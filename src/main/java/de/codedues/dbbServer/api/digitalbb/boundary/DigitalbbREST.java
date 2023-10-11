@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,6 +45,11 @@ import de.codedues.dbbServer.api.digitalbb.client.FileUploadForm;
 import de.codedues.dbbServer.api.digitalbb.client.GetFileRequest;
 import de.codedues.dbbServer.api.digitalbb.client.StoreImageResult;
 import de.codedues.dbbServer.core.AppManager;
+import src.main.java.de.codedues.dbbServer.api.digitalbb.client.AddItemRequestCO;
+import src.main.java.de.codedues.dbbServer.api.digitalbb.client.AddItemResultCO;
+import src.main.java.de.codedues.dbbServer.api.digitalbb.client.BBItemCO;
+import src.main.java.de.codedues.dbbServer.api.digitalbb.client.GetAllItemRequestCO;
+import src.main.java.de.codedues.dbbServer.api.digitalbb.client.GetAllItemResultCO;
 
 @Path("files")
 @Stateless
@@ -51,6 +58,48 @@ public class DigitalbbREST {
 	
 	@Resource(mappedName = AppManager.DBB_DS)
 	    private DataSource dbb_DS;
+	
+	@POST
+	@Path("addItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+		public AddItemResultCO addItem(AddItemRequestCO request) {
+		return null;
+	}
+	
+	
+	@POST
+	@Path("getAllItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+		public GetAllItemResultCO addItem(GetAllItemRequestCO request) {
+		GetAllItemResultCO resultCO = new GetAllItemResultCO();
+		List<BBItemCO> resultList = new ArrayList<>();
+;		String sql = "SELECT * FROM `item` WHERE end <= CURRENT_TIMESTAMP";
+		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				BBItemCO item = new BBItemCO();
+				item.setId(rs.getInt("id"));
+				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
+				item.setTitle(rs.getString("title"));
+				item.setImagePost(rs.getBoolean("img"));
+				item.setMsg(rs.getString("msg"));
+				item.setAutor("autor");
+				item.setStart(rs.getTimestamp("start").toLocalDateTime());
+				item.setEnd(rs.getTimestamp("end").toLocalDateTime());
+				resultList.add(item);				
+			}
+			resultCO.setState("Success");
+			resultCO.setResultList(resultList);
+			return resultCO;
+		} catch (SQLException e) {
+			resultCO.setState("Error");
+			resultCO.setException(e.getMessage());
+		}
+		return null;
+	}
+	
 	
 	@POST
 	@Path("upload")
@@ -142,6 +191,19 @@ public class DigitalbbREST {
 			response.header("Content-Disposition", "attachment; filename="+filename);
 			
 	    return response.build();
+	  }
+	  
+	  private int getNewItemID() {
+		  String sql = "SELECT NEXTVAL(itemID)";
+		  try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+			  ResultSet rs = ps.executeQuery();
+			  rs.next();
+			  return rs.getInt(1);
+		  } catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  return 0;
 	  }
 
 }
