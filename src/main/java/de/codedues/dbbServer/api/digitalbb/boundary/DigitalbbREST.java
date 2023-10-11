@@ -102,6 +102,7 @@ public class DigitalbbREST {
 				item.setEnd(rs.getTimestamp("end").toLocalDateTime());				
 				resultCO.setState("Success");
 				resultCO.setItem(item);
+				return resultCO;
 			} catch (SQLException e) {
 				resultCO.setState("Error");
 				resultCO.setError(e.getMessage());
