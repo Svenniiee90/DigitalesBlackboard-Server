@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
@@ -63,7 +64,49 @@ public class DigitalbbREST {
 	@Path("addItem")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-		public AddItemResultCO addItem(AddItemRequestCO request) {
+		public AddItemResultCO addItem(AddItemRequestCO requestCO) {
+		AddItemResultCO resultCO = new AddItemResultCO();
+		String sql = "insert into `item` (id, cdate, start, end, title, msg, author, img) values (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)";
+		String sql2 = "select * from `item` where id = ?";
+		int rows = 0;
+		int id = 0; 
+		BBItemCO createItem = requestCO.getCreateItem();
+		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+			id = getNewItemID();
+			int index = 1; 
+			ps.setInt(index++, id);
+			ps.setTimestamp(index++, Timestamp.valueOf(createItem.getStart()));
+			ps.setTimestamp(index++, Timestamp.valueOf(createItem.getEnd()));
+			ps.setString(index++, createItem.getTitle());
+			ps.setString(index++, createItem.getMsg());
+			ps.setString(index++, createItem.getAutor());
+			ps.setBoolean(index++, createItem.isImagePost());
+			rows = ps.executeUpdate();			
+		} catch (SQLException e) {
+			resultCO.setState("Error");
+			resultCO.setError(e.getMessage());
+		}
+		if (rows > 0) {
+			try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql2)) {
+				ps.setInt(1, id);
+				ResultSet rs = ps.executeQuery();
+				rs.next();
+				BBItemCO item = new BBItemCO();
+				item.setId(rs.getInt("id"));
+				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
+				item.setTitle(rs.getString("title"));
+				item.setImagePost(rs.getBoolean("img"));
+				item.setMsg(rs.getString("msg"));
+				item.setAutor("autor");
+				item.setStart(rs.getTimestamp("start").toLocalDateTime());
+				item.setEnd(rs.getTimestamp("end").toLocalDateTime());				
+				resultCO.setState("Success");
+				resultCO.setItem(item);
+			} catch (SQLException e) {
+				resultCO.setState("Error");
+				resultCO.setError(e.getMessage());
+			} 
+		}
 		return null;
 	}
 	
@@ -128,7 +171,7 @@ public class DigitalbbREST {
 	    if(uploaded != null) {
 	    	String sql = "INSERT INTO `pictures`(name, endung, itemid, data) VALUES(?,?,?,?)";
 		    try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-		    	
+		  
 		    	ps.setString(1, name);
 		    	ps.setString(2, endung);
 		    	ps.setInt(3, 22323);
@@ -193,17 +236,13 @@ public class DigitalbbREST {
 	    return response.build();
 	  }
 	  
-	  private int getNewItemID() {
+	  private int getNewItemID() throws SQLException {
 		  String sql = "SELECT NEXTVAL(itemID)";
 		  try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 			  ResultSet rs = ps.executeQuery();
 			  rs.next();
 			  return rs.getInt(1);
-		  } catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		  return 0;
+		  }
 	  }
 
 }
