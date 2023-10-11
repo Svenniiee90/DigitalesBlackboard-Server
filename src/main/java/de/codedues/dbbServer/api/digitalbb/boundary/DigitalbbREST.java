@@ -112,7 +112,7 @@ public class DigitalbbREST {
 	
 	
 	@POST
-	@Path("getAllItem")
+	@Path("getAllItems")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 		public GetAllItemResultCO addItem(GetAllItemRequestCO request) {
@@ -128,7 +128,7 @@ public class DigitalbbREST {
 				item.setTitle(rs.getString("title"));
 				item.setImagePost(rs.getBoolean("img"));
 				item.setMsg(rs.getString("msg"));
-				item.setAutor("autor");
+				item.setAutor(rs.getString("author"));
 				item.setStart(rs.getTimestamp("start").toLocalDateTime());
 				item.setEnd(rs.getTimestamp("end").toLocalDateTime());
 				resultList.add(item);				
