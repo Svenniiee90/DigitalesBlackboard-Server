@@ -84,7 +84,9 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getMsg());
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
-			ps.setBytes(index++, Base64.getDecoder().decode(createItem.getImage()));
+   if ((!createItem.getImage().isEmpty()) && createItem.getImage != null) {
+		   ps.setBytes(index++, Base64.getDecoder().decode(createItem.getImage()));
+   }
 			rows = ps.executeUpdate();			
 		} catch (Exception e) {
 			String ex = e.toString();
@@ -113,7 +115,9 @@ try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepare
 				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
 				item.setTitle(rs.getString("title"));
 				item.setImagePost(rs.getBoolean("imgpost"));
-				item.setImage(Base64.getEncoder().encodeToString(rs.getBytes("img")));		
+				if (rs.getBytes("img") != null) {
+		    item.setImage(Base64.getEncoder().encodeToString(rs.getBytes("img")));
+				}
 				item.setMsg(rs.getString("msg"));
 				item.setAutor(rs.getString("author"));
 				item.setStart(rs.getTimestamp("start").toLocalDateTime());
