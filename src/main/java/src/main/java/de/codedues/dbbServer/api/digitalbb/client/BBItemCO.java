@@ -8,6 +8,7 @@ public class BBItemCO {
 	private String title;
 	private String msg;
 	private String autor;
+	private byte[] img;
 	private boolean imagePost;
 	private LocalDateTime cdate;
 	private LocalDateTime start;
@@ -36,6 +37,13 @@ public class BBItemCO {
 	}
 	public void setAutor(String autor) {
 		this.autor = autor;
+	}
+	
+	public byte[] getImg() {
+		return img;
+	}
+	public void setImg(byte[] img) {
+		this.img = img;
 	}
 	public boolean isImagePost() {
 		return imagePost;

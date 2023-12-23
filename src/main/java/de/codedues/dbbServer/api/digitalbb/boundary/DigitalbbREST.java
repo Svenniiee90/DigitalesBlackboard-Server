@@ -66,8 +66,7 @@ public class DigitalbbREST {
 	@Consumes(MediaType.APPLICATION_JSON)
 		public AddItemResultCO addItem(AddItemRequestCO requestCO) {
 		AddItemResultCO resultCO = new AddItemResultCO();
-		String sql = "insert into `item` (id, cdate, start, end, title, msg, author, img) values (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)";
-		String sql2 = "select * from `item` where id = ?";
+		String sql = "insert into `item` (id, cdate, start, end, title, msg, author, imgpost, img) values (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)";
 		int rows = 0;
 		int id = 0; 
 		BBItemCO createItem = requestCO.getCreateItem();
@@ -81,32 +80,11 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getMsg());
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
+			ps.setBytes(index++, createItem.getImg());
 			rows = ps.executeUpdate();			
 		} catch (SQLException e) {
 			resultCO.setState("Error");
 			resultCO.setError(e.getMessage());
-		}
-		if (rows > 0) {
-			try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql2)) {
-				ps.setInt(1, id);
-				ResultSet rs = ps.executeQuery();
-				rs.next();
-				BBItemCO item = new BBItemCO();
-				item.setId(rs.getInt("id"));
-				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
-				item.setTitle(rs.getString("title"));
-				item.setImagePost(rs.getBoolean("img"));
-				item.setMsg(rs.getString("msg"));
-				item.setAutor("autor");
-				item.setStart(rs.getTimestamp("start").toLocalDateTime());
-				item.setEnd(rs.getTimestamp("end").toLocalDateTime());				
-				resultCO.setState("Success");
-				resultCO.setItem(item);
-				return resultCO;
-			} catch (SQLException e) {
-				resultCO.setState("Error");
-				resultCO.setError(e.getMessage());
-			} 
 		}
 		return null;
 	}
@@ -127,7 +105,8 @@ public class DigitalbbREST {
 				item.setId(rs.getInt("id"));
 				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
 				item.setTitle(rs.getString("title"));
-				item.setImagePost(rs.getBoolean("img"));
+				item.setImagePost(rs.getBoolean("imgpost"));
+				item.setImg(rs.getBytes("img"));
 				item.setMsg(rs.getString("msg"));
 				item.setAutor(rs.getString("author"));
 				item.setStart(rs.getTimestamp("start").toLocalDateTime());
