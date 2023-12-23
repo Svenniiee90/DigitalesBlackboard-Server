@@ -83,12 +83,13 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getMsg());
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
-			ps.setBytes(index++, createItem.getImg());
+			ps.setBlob(index++, blob);
 			rows = ps.executeUpdate();			
 		} catch (Exception e) {
+			String ex = e.getMessage();
 			resultCO.setState("Error");
-			resultCO.setError(e.getMessage());
-			System.out.println(e.getMessage());
+			resultCO.setError(ex);
+			System.out.println("DEBUG:"+ex);
 		}
 		return null;
 	}
@@ -121,9 +122,9 @@ public class DigitalbbREST {
 			resultCO.setResultList(resultList);
 			return resultCO;
 		} catch (Exception e) {
+			String ex = e.getMessage();
 			resultCO.setState("Error");
-			resultCO.setException(e.getMessage());
-			System.out.println(e.getMessage());
+			System.out.println("DEBUG:"+ex);
 		}
 		return null;
 	}
