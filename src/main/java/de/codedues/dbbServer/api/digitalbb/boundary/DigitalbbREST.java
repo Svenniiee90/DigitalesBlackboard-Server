@@ -102,8 +102,9 @@ public class DigitalbbREST {
 		public GetAllItemResultCO GetAllItem(GetAllItemRequestCO request) {
 		GetAllItemResultCO resultCO = new GetAllItemResultCO();
 		List<BBItemCO> resultList = new ArrayList<>();
-;		String sql = "select * from `item` WHERE item.start <= CURRENT_TIMESTAMP and item.end >= CURRENT_TIMESTAMP";
-		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        String sql = "select * from `item` WHERE item.start <= CURRENT_TIMESTAMP and item.end >= CURRENT_TIMESTAMP";
+		Blob blob = null;
+try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				BBItemCO item = new BBItemCO();
@@ -111,7 +112,8 @@ public class DigitalbbREST {
 				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
 				item.setTitle(rs.getString("title"));
 				item.setImagePost(rs.getBoolean("imgpost"));
-				item.setImg(rs.getBytes("img"));
+				blob = rs.getBlob("img");
+				item.setImg(blob.getBytes(1, (int) blob.length()));
 				item.setMsg(rs.getString("msg"));
 				item.setAutor(rs.getString("author"));
 				item.setStart(rs.getTimestamp("start").toLocalDateTime());
