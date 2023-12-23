@@ -75,7 +75,6 @@ public class DigitalbbREST {
 		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 			id = getNewItemID();
 			int index = 1; 
-			blob.setBytes(index, createItem.getImg());
 			ps.setInt(index++, id);
 			ps.setTimestamp(index++, Timestamp.valueOf(createItem.getStart()));
 			ps.setTimestamp(index++, Timestamp.valueOf(createItem.getEnd()));
@@ -83,10 +82,13 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getMsg());
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
+			if(createItem.isImagePost()) {
+				blob.setBytes(index, createItem.getImg());
+			}
 			ps.setBlob(index++, blob);
 			rows = ps.executeUpdate();			
 		} catch (Exception e) {
-			String ex = e.getMessage();
+			String ex = e.toString();
 			resultCO.setState("Error");
 			resultCO.setError(ex);
 			System.out.println("DEBUG:"+ex);
@@ -112,8 +114,10 @@ try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepare
 				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
 				item.setTitle(rs.getString("title"));
 				item.setImagePost(rs.getBoolean("imgpost"));
-				blob = rs.getBlob("img");
-				item.setImg(blob.getBytes(1, (int) blob.length()));
+				if(item.isImagePost()){
+					blob = rs.getBlob("img");
+					item.setImg(blob.getBytes(1, (int) blob.length()));		
+				}				
 				item.setMsg(rs.getString("msg"));
 				item.setAutor(rs.getString("author"));
 				item.setStart(rs.getTimestamp("start").toLocalDateTime());
@@ -124,7 +128,7 @@ try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepare
 			resultCO.setResultList(resultList);
 			return resultCO;
 		} catch (Exception e) {
-			String ex = e.getMessage();
+			String ex = e.toString();
 			resultCO.setState("Error");
 			System.out.println("DEBUG:"+ex);
 		}
