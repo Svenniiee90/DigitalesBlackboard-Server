@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.StandardCopyOption;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -69,10 +70,12 @@ public class DigitalbbREST {
 		String sql = "insert into `item` (id, cdate, start, end, title, msg, author, imgpost, img) values (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)";
 		int rows = 0;
 		int id = 0; 
+		Blob blob = null;
 		BBItemCO createItem = requestCO.getCreateItem();
 		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 			id = getNewItemID();
 			int index = 1; 
+			blob.setBytes(index, createItem.getImg());
 			ps.setInt(index++, id);
 			ps.setTimestamp(index++, Timestamp.valueOf(createItem.getStart()));
 			ps.setTimestamp(index++, Timestamp.valueOf(createItem.getEnd()));
