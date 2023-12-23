@@ -82,7 +82,7 @@ public class DigitalbbREST {
 			ps.setBoolean(index++, createItem.isImagePost());
 			ps.setBytes(index++, createItem.getImg());
 			rows = ps.executeUpdate();			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			resultCO.setState("Error");
 			resultCO.setError(e.getMessage());
 		}
@@ -116,7 +116,7 @@ public class DigitalbbREST {
 			resultCO.setState("Success");
 			resultCO.setResultList(resultList);
 			return resultCO;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			resultCO.setState("Error");
 			resultCO.setException(e.getMessage());
 		}
