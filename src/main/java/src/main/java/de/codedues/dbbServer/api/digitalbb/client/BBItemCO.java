@@ -1,6 +1,7 @@
 package src.main.java.de.codedues.dbbServer.api.digitalbb.client;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class BBItemCO {
 	
@@ -68,6 +69,12 @@ public class BBItemCO {
 	}
 	public void setEnd(LocalDateTime end) {
 		this.end = end;
+	}
+	@Override
+	public String toString() {
+		return "BBItemCO [id=" + id + ", title=" + title + ", msg=" + msg + ", autor=" + autor + ", img="
+				+ Arrays.toString(img) + ", imagePost=" + imagePost + ", cdate=" + cdate + ", start=" + start + ", end="
+				+ end + "]";
 	}
 	
 	

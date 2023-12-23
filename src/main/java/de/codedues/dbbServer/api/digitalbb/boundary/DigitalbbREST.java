@@ -67,6 +67,7 @@ public class DigitalbbREST {
 	@Consumes(MediaType.APPLICATION_JSON)
 		public AddItemResultCO addItem(AddItemRequestCO requestCO) {
 		AddItemResultCO resultCO = new AddItemResultCO();
+		System.out.println(requestCO.getCreateItem().toString());
 		String sql = "insert into `item` (id, cdate, start, end, title, msg, author, imgpost, img) values (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)";
 		int rows = 0;
 		int id = 0; 
