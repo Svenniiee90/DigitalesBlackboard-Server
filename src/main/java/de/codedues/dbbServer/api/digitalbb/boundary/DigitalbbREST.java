@@ -84,7 +84,7 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getMsg());
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
-   if ((!createItem.getImage().isEmpty()) && createItem.getImage != null) {
+   if (createItem.getImage() != null) {
 		   ps.setBytes(index++, Base64.getDecoder().decode(createItem.getImage()));
    }
 			rows = ps.executeUpdate();			
