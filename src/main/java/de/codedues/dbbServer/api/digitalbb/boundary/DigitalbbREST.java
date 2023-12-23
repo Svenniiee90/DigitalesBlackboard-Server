@@ -115,7 +115,7 @@ try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepare
 				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
 				item.setTitle(rs.getString("title"));
 				item.setImagePost(rs.getBoolean("imgpost"));
-				if (rs.getBytes("img") != null) {
+				if (item.getImagePost()) {
 		    item.setImage(Base64.getEncoder().encodeToString(rs.getBytes("img")));
 				}
 				item.setMsg(rs.getString("msg"));
