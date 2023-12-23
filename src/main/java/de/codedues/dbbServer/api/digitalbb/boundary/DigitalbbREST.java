@@ -84,7 +84,7 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
 			if(createItem.isImagePost()) {
-				blob.setBytes(index, createItem.getImg());
+				blob.setBytes(index, createItem.getImage());
 			}
 			ps.setBlob(index++, blob);
 			rows = ps.executeUpdate();			
@@ -117,7 +117,7 @@ try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepare
 				item.setImagePost(rs.getBoolean("imgpost"));
 				if(item.isImagePost()){
 					blob = rs.getBlob("img");
-					item.setImg(blob.getBytes(1, (int) blob.length()));		
+					item.setImage(blob.getBytes(1, (int) blob.length()));		
 				}				
 				item.setMsg(rs.getString("msg"));
 				item.setAutor(rs.getString("author"));
