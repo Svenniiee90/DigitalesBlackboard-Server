@@ -9,7 +9,7 @@ public class BBItemCO {
 	private String title;
 	private String msg;
 	private String autor;
-	private byte[] image;
+	private String image;
 	private boolean imagePost;
 	private LocalDateTime cdate;
 	private LocalDateTime start;
@@ -40,10 +40,10 @@ public class BBItemCO {
 		this.autor = autor;
 	}
 	
-	public byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
-	public void setImage(byte[] img) {
+	public void setImage(String img) {
 		this.image = img;
 	}
 	public boolean isImagePost() {
@@ -72,10 +72,10 @@ public class BBItemCO {
 	}
 	@Override
 	public String toString() {
-		return "BBItemCO [id=" + id + ", title=" + title + ", msg=" + msg + ", autor=" + autor + ", img="
-				+ Arrays.toString(image) + ", imagePost=" + imagePost + ", cdate=" + cdate + ", start=" + start + ", end="
-				+ end + "]";
+		return "BBItemCO [id=" + id + ", title=" + title + ", msg=" + msg + ", autor=" + autor + ", image=" + image
+				+ ", imagePost=" + imagePost + ", cdate=" + cdate + ", start=" + start + ", end=" + end + "]";
 	}
+	
 	
 	
 	

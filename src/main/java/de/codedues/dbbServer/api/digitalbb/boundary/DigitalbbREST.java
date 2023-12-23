@@ -1,6 +1,7 @@
 package de.codedues.dbbServer.api.digitalbb.boundary;
 
 import java.io.ByteArrayOutputStream;
+import javax.sql.rowset.serial.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +16,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,7 +73,6 @@ public class DigitalbbREST {
 		String sql = "insert into `item` (id, cdate, start, end, title, msg, author, imgpost, img) values (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)";
 		int rows = 0;
 		int id = 0; 
-		Blob blob = null;
 		BBItemCO createItem = requestCO.getCreateItem();
 		try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 			id = getNewItemID();
@@ -83,10 +84,7 @@ public class DigitalbbREST {
 			ps.setString(index++, createItem.getMsg());
 			ps.setString(index++, createItem.getAutor());
 			ps.setBoolean(index++, createItem.isImagePost());
-			if(createItem.isImagePost()) {
-				blob.setBytes(index, createItem.getImage());
-			}
-			ps.setBlob(index++, blob);
+			ps.setBytes(index++, Base64.getDecoder().decode(createItem.getImage()));
 			rows = ps.executeUpdate();			
 		} catch (Exception e) {
 			String ex = e.toString();
@@ -115,10 +113,7 @@ try (Connection con = dbb_DS.getConnection(); PreparedStatement ps = con.prepare
 				item.setCdate(rs.getTimestamp("cdate").toLocalDateTime());
 				item.setTitle(rs.getString("title"));
 				item.setImagePost(rs.getBoolean("imgpost"));
-				if(item.isImagePost()){
-					blob = rs.getBlob("img");
-					item.setImage(blob.getBytes(1, (int) blob.length()));		
-				}				
+				item.setImage(Base64.getEncoder().encodeToString(rs.getBytes("img")));		
 				item.setMsg(rs.getString("msg"));
 				item.setAutor(rs.getString("author"));
 				item.setStart(rs.getTimestamp("start").toLocalDateTime());
