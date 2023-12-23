@@ -88,6 +88,7 @@ public class DigitalbbREST {
 		} catch (Exception e) {
 			resultCO.setState("Error");
 			resultCO.setError(e.getMessage());
+			System.out.println(e.getMessage());
 		}
 		return null;
 	}
@@ -97,7 +98,7 @@ public class DigitalbbREST {
 	@Path("getAllItems")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-		public GetAllItemResultCO addItem(GetAllItemRequestCO request) {
+		public GetAllItemResultCO GetAllItem(GetAllItemRequestCO request) {
 		GetAllItemResultCO resultCO = new GetAllItemResultCO();
 		List<BBItemCO> resultList = new ArrayList<>();
 ;		String sql = "select * from `item` WHERE item.start <= CURRENT_TIMESTAMP and item.end >= CURRENT_TIMESTAMP";
@@ -122,6 +123,7 @@ public class DigitalbbREST {
 		} catch (Exception e) {
 			resultCO.setState("Error");
 			resultCO.setException(e.getMessage());
+			System.out.println(e.getMessage());
 		}
 		return null;
 	}
